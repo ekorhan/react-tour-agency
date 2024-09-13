@@ -1,0 +1,39 @@
+// If you want to override variables do it here
+@import "variables";
+
+// Import styles
+@import "@coreui/coreui/scss/coreui";
+@import "@coreui/chartjs/scss/coreui-chartjs";
+
+// Vendors
+@import "vendors/simplebar";
+
+// Custom styles for this theme
+@import "theme";
+
+// If you want to add custom CSS you can put it here
+@import "custom";
+
+// Stil dosyanıza özel bir renk ekleyin
+$custom-color: #2a303d; // Örnek olarak kırmızı rengi seçtik
+
+// CCard bileşenine bu özel rengi uygulayın
+.CCard-custom {
+    background-color: $custom-color;
+    color: rgb(255, 255, 255); // Metin rengi beyaz olacak şekilde ayarlandı
+}
+
+.page-link {
+    color: $custom-color;
+    cursor: pointer;
+}
+
+.page-link.active,
+.active>.page-link {
+    background-color: $custom-color;
+    cursor: not-allowed;
+}
+
+.pagination {
+    --cui-pagination-hover-color: $custom-color;
+}
