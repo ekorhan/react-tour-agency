@@ -1,78 +1,81 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
 import {
-    CButton,
-    CCard,
-    CCardBody,
-    CCardHeader,
-    CForm,
-    CFormInput,
-    CFormLabel,
-    CFormSelect,
-} from '@coreui/react'
+  CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CForm,
+  CFormInput,
+  CFormLabel,
+  CFormSelect
+} from "@coreui/react";
 import data from "../data.json";
+import { useTranslation } from "react-i18next";
 
 const PlanATour = () => {
-    return (
-        <CCard className="mb-4">
-            <CCardHeader>
-                <strong>Plan a Tour</strong> <small>You can plan a tour to be organized here...</small>
-            </CCardHeader>
-            <CCardBody>
-                <CForm validated={false}>
-                    <div className="mb-3">
-                        <CFormLabel>Tour Name</CFormLabel>
-                        <CFormInput type="text" />
-                    </div>
+  const { t } = useTranslation();
 
-                    <div className="mb-3">
-                        <CFormSelect label="Begin Location">
-                            {data.beginNodes.map((e) => {
-                                return (
-                                    <option key={e.id} value={e.id}>{e.name}</option>
-                                )
-                            })}
-                        </CFormSelect>
-                    </div>
+  return (
+    <CCard className="mb-4">
+      <CCardHeader>
+        <strong>{t("tourPlan")}</strong> <small>{t("tourPlanDescription")}</small>
+      </CCardHeader>
+      <CCardBody>
+        <CForm validated={false}>
+          <div className="mb-3">
+            <CFormLabel>{t("tourName")}</CFormLabel>
+            <CFormInput type="text" />
+          </div>
 
-                    <div className="mb-3">
-                        <CFormSelect label="Destination">
-                            {data.destinitions.map((e) => {
-                                return (
-                                    <option key={e.id} value={e.id}>{e.name}</option>
-                                )
-                            })}
-                        </CFormSelect>
-                    </div>
+          <div className="mb-3">
+            <CFormSelect label={t("beginNode")}>
+              {data.beginNodes.map((e) => {
+                return (
+                  <option key={e.id} value={e.id}>{e.name}</option>
+                );
+              })}
+            </CFormSelect>
+          </div>
 
-                    <div className="mb-3">
-                        <CFormSelect label="Vehicle">
-                            {data.vehicles.map((e) => {
-                                return (
-                                    <option key={e.id} value={e.id}>{e.name}</option>
-                                )
-                            })}
-                        </CFormSelect>
-                    </div>
+          <div className="mb-3">
+            <CFormSelect label={t("destination")}>
+              {data.destinitions.map((e) => {
+                return (
+                  <option key={e.id} value={e.id}>{e.name}</option>
+                );
+              })}
+            </CFormSelect>
+          </div>
 
-                    <div className="mb-3">
-                        <CFormSelect label="Driver">
-                            {data.drivers.map((e) => {
-                                return (
-                                    <option key={e.id} value={e.id}>{e.name}</option>
-                                )
-                            })}
-                        </CFormSelect>
-                    </div>
+          <div className="mb-3">
+            <CFormSelect label={t("vehicle")}>
+              {data.vehicles.map((e) => {
+                return (
+                  <option key={e.id} value={e.id}>{e.name}</option>
+                );
+              })}
+            </CFormSelect>
+          </div>
 
-                    <div className="mb-3">
-                        <CButton type="submit" color="primary" >
-                            Create
-                        </CButton>
-                    </div>
-                </CForm>
-            </CCardBody>
-        </CCard>
-    )
-}
+          <div className="mb-3">
+            <CFormSelect label={t("driver")}>
+              {data.drivers.map((e) => {
+                return (
+                  <option key={e.id} value={e.id}>{e.name}</option>
+                );
+              })}
+            </CFormSelect>
+          </div>
 
-export default PlanATour
+          <div className="mb-3">
+            <CButton type="submit" color="primary">
+              {t("create")}
+            </CButton>
+          </div>
+        </CForm>
+      </CCardBody>
+    </CCard>
+  );
+};
+
+export default PlanATour;

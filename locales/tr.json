@@ -1,0 +1,15 @@
+{
+  "welcome": "Hoş Geldiniz",
+  "greeting": "Merhaba, {name}!",
+  "tourPlan": "Tur Planla",
+  "tourPlanDescription": "Burada yeni bir tur oluşturabilirsiniz...",
+  "tourName": "Tur İsmi",
+  "beginNode": "Başlangıç Noktası",
+  "destination": "Varış Noktası",
+  "vehicle": "Araç",
+  "driver": "Şöför",
+  "create": "Oluştur",
+  "firstName": "İsim",
+  "lastName": "Soyisim",
+  "phoneNumber": "Telefon Numarası"
+}
