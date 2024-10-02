@@ -2,5 +2,18 @@
   "welcome": "Welcome to our app!",
   "greeting": "Hello, {name}!",
   "tourPlan": "Plan A Tour",
-  "tourPlanDescription": "You can plan a tour to be organized here..."
+  "tourPlanDescription": "You can plan a tour to be organized here...",
+  "tourName": "Tour Name",
+  "beginNode": "Begin Node",
+  "destination": "Destination",
+  "vehicle": "Vehicle",
+  "driver": "Driver",
+  "create": "Create",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phoneNumber": "Phone Number",
+  "customer_create_success": "Customer has added succusfully!",
+  "customer_create_failed": "Record process is failed",
+  "unexpected_exception": "UNEXPECTED EXCEPTION!",
+  "customerId": "Customer Idendity"
 }

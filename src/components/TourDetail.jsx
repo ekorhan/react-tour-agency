@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     CCard,
@@ -19,8 +19,11 @@ import {
     CCol
 } from '@coreui/react'
 import data from "../data.json";
+import { httpGet } from '../http/http';
+import { useTranslation } from 'react-i18next';
 
 const TourDetail = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const handleTourEdit = (id) => {
@@ -30,11 +33,19 @@ const TourDetail = () => {
     const { id } = useParams();
 
     const findTour = () => {
-        const foundTour = data.tours.find((e) => e.id == id);
-        return foundTour || null;
+        httpGet('tour?' + ('tourId=' + id))
+            .then(r => {
+                setTour(r.data);
+            });
     }
 
-    const tour = findTour();
+
+    useEffect(() => {
+        findTour();
+    }, [])
+
+
+    const [tour, setTour] = useState({ tourName: '' });
 
     return (
         <div>
@@ -47,13 +58,14 @@ const TourDetail = () => {
                 }} md={2}>
                     <CCard className="CCard-custom">
                         <CCardBody>
-                            <CCardTitle>Tour</CCardTitle>
+                            <CCardTitle>{t('tourName')}</CCardTitle>
                             <CCardText>
                                 {tour.tourName}
                             </CCardText>
                         </CCardBody>
                     </CCard>
                 </CCol>
+
                 <CCol style={{
                     paddingLeft: '0px',
                     paddingTop: '0.5%',
@@ -62,13 +74,14 @@ const TourDetail = () => {
                 }} md={2}>
                     <CCard className="CCard-custom">
                         <CCardBody>
-                            <CCardTitle>Begin Node</CCardTitle>
+                            <CCardTitle>{t('tourDescription')}</CCardTitle>
                             <CCardText>
-                                {tour.beginNode}
+                                {tour.tourDescription}
                             </CCardText>
                         </CCardBody>
                     </CCard>
                 </CCol>
+
                 <CCol style={{
                     paddingLeft: '0px',
                     paddingTop: '0.5%',
@@ -77,13 +90,14 @@ const TourDetail = () => {
                 }} md={2}>
                     <CCard className="CCard-custom">
                         <CCardBody>
-                            <CCardTitle>Destinition</CCardTitle>
+                            <CCardTitle>{t('startingStation')}</CCardTitle>
                             <CCardText>
-                                {tour.destinition}
+                                {tour.startingStation}
                             </CCardText>
                         </CCardBody>
                     </CCard>
                 </CCol>
+
                 <CCol style={{
                     paddingLeft: '0px',
                     paddingTop: '0.5%',
@@ -92,13 +106,14 @@ const TourDetail = () => {
                 }} md={2}>
                     <CCard className="CCard-custom">
                         <CCardBody>
-                            <CCardTitle>Vehicle</CCardTitle>
+                            <CCardTitle>{t('destination')}</CCardTitle>
                             <CCardText>
-                                {tour.vehicle}
+                                {tour.destination}
                             </CCardText>
                         </CCardBody>
                     </CCard>
                 </CCol>
+
                 <CCol style={{
                     paddingLeft: '0px',
                     paddingTop: '0.5%',
@@ -107,9 +122,25 @@ const TourDetail = () => {
                 }} md={2}>
                     <CCard className="CCard-custom">
                         <CCardBody>
-                            <CCardTitle>Driver</CCardTitle>
+                            <CCardTitle>{t('vehicleName')}</CCardTitle>
                             <CCardText>
-                                {tour.driver}
+                                {tour.vehicle?.vehicleName}
+                            </CCardText>
+                        </CCardBody>
+                    </CCard>
+                </CCol>
+
+                <CCol style={{
+                    paddingLeft: '0px',
+                    paddingTop: '0.5%',
+                    paddingRight: '0.5%',
+                    textAlign: 'left'
+                }} md={2}>
+                    <CCard className="CCard-custom">
+                        <CCardBody>
+                            <CCardTitle>{t('driverName')}</CCardTitle>
+                            <CCardText>
+                                {tour.driverName}
                             </CCardText>
                         </CCardBody>
                     </CCard>

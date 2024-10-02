@@ -14,35 +14,47 @@ import {
 import { useTranslation } from "react-i18next";
 import { httpPost } from '../http/http';
 
-const CustomerCreate = () => {
+const DriverCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleCustomerDetail = (id) => {
-    navigate(`/customer/${id}`);
+    navigate(`/driver/${id}`);
   };
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("+90");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [zip, setZip] = useState("");
+  const [country, setCountry] = useState("TR");
+  const [gender, setGender] = useState("M");
+  const [dateOfBirth, setDateOfBirth] = useState("");
 
-  function saveCustomer() {
+  function createDriver() {
     const request = {
       "firstName": firstName,
       "lastName": lastName,
       "countryCode": countryCode,
-      "phoneNumber": phoneNumber
+      "phoneNumber": phoneNumber,
+      "address": address,
+      "city": city,
+      "zip": zip,
+      "country": country,
+      "gender": gender,
+      "dateOfBirth": dateOfBirth,
     };
 
-    httpPost('customer/createCustomer', request)
+    httpPost('driver/create', request)
       .then(r => {
         let data = r.data;
         if (data > 0) {
-          alert(t("customer_create_success"));
+          alert(t("driver_create_success"));
           handleCustomerDetail(data);
         } else {
-          alert(t("customer_create_failed"));
+          alert(t("driver_create_failed"));
         }
       });
   }
@@ -66,10 +78,10 @@ const CustomerCreate = () => {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <CCard className="w-50">
         <CCardHeader>
-          <strong>{t("customer_create")}</strong> <small>{t("customer_create_description")}</small>
+          <strong>{t("driver_create")}</strong> <small>{t("driver_create_description")}</small>
         </CCardHeader>
         <CCardBody>
-          <CForm onSubmit={saveCustomer}>
+          <CForm onSubmit={createDriver}>
             <CRow className="mb-3">
               <CFormLabel>{t("firstName")}</CFormLabel>
               <CFormInput
@@ -106,6 +118,60 @@ const CustomerCreate = () => {
                 />
               </CCol>
 
+              <CRow className="mb-3">
+                <CFormLabel>{t("address")}</CFormLabel>
+                <CFormInput
+                  value={address}
+                  onChange={e => setAddress(e.target.value)}
+                  required
+                />
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel>{t("city")}</CFormLabel>
+                <CFormInput
+                  value={city}
+                  onChange={e => setCity(e.target.value)}
+                  required
+                />
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel>{t("zip")}</CFormLabel>
+                <CFormInput
+                  value={zip}
+                  onChange={e => setZip(e.target.value)}
+                  required
+                />
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel>{t("country")}</CFormLabel>
+                <CFormInput
+                  value={country}
+                  onChange={e => setCountry(e.target.value)}
+                  required
+                />
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel>{t("gender")}</CFormLabel>
+                <CFormInput
+                  value={gender}
+                  onChange={e => setGender(e.target.value)}
+                  required
+                />
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel>{t("dateOfBirth")}</CFormLabel>
+                <CFormInput
+                  value={dateOfBirth}
+                  onChange={e => setDateOfBirth(e.target.value)}
+                  required
+                />
+              </CRow>
+
             </CRow>
 
             <CRow className="d-flex justify-content-end mb-3">
@@ -120,4 +186,4 @@ const CustomerCreate = () => {
   )
 }
 
-export default CustomerCreate;
+export default DriverCreate;

@@ -7,18 +7,18 @@ import {
 import { CNavItem, CNavTitle } from "@coreui/react";
 
 let langVal =
+{
+  cust:
   {
-    cust:
-      {
-        tr: "Müşteri İşemleri",
-        en: "Customer"
-      },
-    custCreate:
-      {
-        tr: "Müşteri Oluştur",
-        en: "Create A Customer"
-      }
-  };
+    tr: "Müşteri İşemleri",
+    en: "Customer"
+  },
+  custCreate:
+  {
+    tr: "Müşteri Oluştur",
+    en: "Create A Customer"
+  }
+};
 
 let lang = "tr";
 const _nav = [
@@ -52,6 +52,36 @@ const _nav = [
     component: CNavItem,
     name: "Tours",
     to: "/tourlist",
+    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
+  },
+  {
+    component: CNavTitle,
+    name: "Driver"
+  },
+  {
+    component: CNavItem,
+    name: "Sürücü Oluştur",
+    to: "/drivercreate",
+    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
+  },
+  {
+    component: CNavTitle,
+    name: "Vehicle"
+  },
+  {
+    component: CNavItem,
+    name: "Araç Oluştur",
+    to: "/vehiclecreate",
+    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
+  },
+  {
+    component: CNavTitle,
+    name: "Station"
+  },
+  {
+    component: CNavItem,
+    name: "Konum ve Durak Oluştur",
+    to: "/stationcreate",
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
   }
 ];
