@@ -35,7 +35,7 @@ const CustomerCreate = () => {
       "phoneNumber": phoneNumber
     };
 
-    httpPost('customer/createCustomer', request)
+    httpPost('customer/create', request)
       .then(r => {
         let data = r.data;
         if (data > 0) {

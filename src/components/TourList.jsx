@@ -46,6 +46,7 @@ const TourList = () => {
                     <CTableRow>
                         <CTableHeaderCell className="w-25" scope="col">ID</CTableHeaderCell>
                         <CTableHeaderCell className="w-50" scope="col">Tour</CTableHeaderCell>
+                        <CTableHeaderCell className="w-50" scope="col">Date</CTableHeaderCell>
                         <CTableHeaderCell className="w-25" scope="col">Actions</CTableHeaderCell>
                     </CTableRow>
                 </CTableHead>
@@ -55,6 +56,7 @@ const TourList = () => {
                             <CTableRow key={e.id}>
                                 <CTableDataCell><h6>{e.id}</h6></CTableDataCell>
                                 <CTableDataCell><h6>{e.tourName}</h6></CTableDataCell>
+                                <CTableDataCell><h7>{e.startDate}<br />{e.startTime}</h7></CTableDataCell>
                                 <CTableDataCell>
                                     <CButtonGroup className="me-2" role="group" aria-label="First group">
                                         <CButton color="secondary" onClick={() => handleTourDetail(e.id)}>Detail</CButton>

@@ -11,6 +11,8 @@ const TourEdit = React.lazy(() => import('./components/TourEdit'))
 //Customer
 const CustomerCreate = React.lazy(() => import('./components/CustomerCreate'))
 const CustomerDetail = React.lazy(() => import('./components/CustomerDetail'))
+const CustomerEdit = React.lazy(() => import('./components/CustomerCreate'))
+const CustomerList = React.lazy(() => import('./components/CustomerList'))
 
 //Driver
 const DriverCreate = React.lazy(() => import('./components/DriverCreate'))
@@ -38,6 +40,8 @@ const routes = [
   //Customer
   { path: '/customercreate', name: 'Create Customer', element: CustomerCreate },
   { path: '/customer/:id', name: 'Customer Detail', element: CustomerDetail },
+  { path: '/customer/edit/:id', name: 'Customer Edit', element: CustomerEdit },
+  { path: '/customers/', name: 'Customers', element: CustomerList },
 
   //Driver
   { path: '/drivercreate', name: 'Create Driver', element: DriverCreate },

@@ -51,7 +51,7 @@ const CustomerDetails = () => {
                     <CCardBody>
                         <CCardTitle>{t('customerId')}</CCardTitle>
                         <CCardText>
-                            {customer.customerId}
+                            {customer.id}
                         </CCardText>
                     </CCardBody>
                 </CCard>

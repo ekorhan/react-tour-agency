@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   CButton,
   CCard,
@@ -10,11 +11,17 @@ import {
   CFormLabel,
   CFormSelect
 } from "@coreui/react";
-import data from "../data.json";
+
 import { useTranslation } from "react-i18next";
 import { httpGet, httpPost } from '../http/http';
 
 const PlanATour = () => {
+  const navigate = useNavigate();
+
+  const handleTourDetail = (id) => {
+    navigate(`/tourlist/detail/${id}`);
+  };
+
   const { t } = useTranslation();
 
   const [stations, setStations] = useState([]);
@@ -54,6 +61,10 @@ const PlanATour = () => {
   }
 
   const [tourName, setTourName] = useState("");
+  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endDate, setEndDate] = useState();
+  const [endTime, setEndTime] = useState();
   const [tourDescription, setTourDescription] = useState("");
   const [tourImage, setTourImage] = useState("");
   const [startingStationId, setStartingStationId] = useState(0);
@@ -73,6 +84,10 @@ const PlanATour = () => {
   function saveTour() {
     const request = {
       tourName: tourName,
+      startDate: startDate,
+      startTime: startTime,
+      endDate: endDate,
+      endTime: endTime,
       tourDescription: tourDescription,
       tourImage: tourImage,
       startingStationId: startingStationId,
@@ -94,6 +109,7 @@ const PlanATour = () => {
         let data = r.data;
         if (data > 0) {
           alert(t("customer_create_success"));
+          handleTourDetail(data);
         } else {
           alert(t("customer_create_failed"));
         }
@@ -113,6 +129,46 @@ const PlanATour = () => {
               type="text"
               value={tourName}
               onChange={e => setTourName(e.target.value)}
+              required
+            />
+          </CCol>
+
+          <CCol className="mb-3">
+            <CFormLabel>{t("tour_startDate")}</CFormLabel>
+            <CFormInput
+              type="date"
+              value={startDate}
+              onChange={e => setStartDate(e.target.value)}
+              required
+            />
+          </CCol>
+
+          <CCol className="mb-3">
+            <CFormLabel>{t("tour_startTime")}</CFormLabel>
+            <CFormInput
+              type="time"
+              value={startTime}
+              onChange={e => setStartTime(e.target.value)}
+              required
+            />
+          </CCol>
+
+          <CCol className="mb-3">
+            <CFormLabel>{t("tour_endDate")}</CFormLabel>
+            <CFormInput
+              type="date"
+              value={endDate}
+              onChange={e => setEndDate(e.target.value)}
+              required
+            />
+          </CCol>
+
+          <CCol className="mb-3">
+            <CFormLabel>{t("tour_endTime")}</CFormLabel>
+            <CFormInput
+              type="time"
+              value={endTime}
+              onChange={e => setEndTime(e.target.value)}
               required
             />
           </CCol>

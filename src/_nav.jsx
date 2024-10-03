@@ -17,6 +17,16 @@ let langVal =
   {
     tr: "Müşteri Oluştur",
     en: "Create A Customer"
+  },
+  customers:
+  {
+    tr: "Müşteriler",
+    en: "Customers"
+  },
+  planATour:
+  {
+    tr: "Tur Oluştur",
+    en: "Plan A Tour"
   }
 };
 
@@ -39,12 +49,18 @@ const _nav = [
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
   },
   {
+    component: CNavItem,
+    name: langVal.customers.tr,
+    to: "/customers",
+    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
+  },
+  {
     component: CNavTitle,
     name: "Tour"
   },
   {
     component: CNavItem,
-    name: "Plan a Tour",
+    name: langVal.planATour.tr,
     to: "/planatour",
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />
   },

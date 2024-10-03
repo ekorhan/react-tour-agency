@@ -21,7 +21,7 @@ const CustomerDetails = () => {
     }, [])
 
     const findDriver = () => {
-        httpGet('driver?' + ('driver=' + id))
+        httpGet('driver?' + ('driverId=' + id))
             .then(r => {
                 setDriver(r.data);
             });
