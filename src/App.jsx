@@ -4,6 +4,24 @@ import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
+import { initReactI18next } from "react-i18next";
+import i18n from "i18next";
+import en from "../locales/en.json";
+import tr from "../locales/tr.json";
+
+i18n
+  .use(initReactI18next) // pass i18n instance to react-i18next
+  .init({
+    resources: {
+      en: { translation: en },
+      tr: { translation: tr }
+    },
+    lng: "tr", // default language
+    fallbackLng: "en", // fallback language
+    interpolation: {
+      escapeValue: false // react already safes from xss
+    }
+  });
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
