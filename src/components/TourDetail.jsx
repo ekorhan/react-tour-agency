@@ -50,6 +50,13 @@ const TourDetail = () => {
             });
     }
 
+    const findPassengers = () => {
+        httpGet('customerTour/tourCustomers?' + ('tourId=' + id))
+            .then(r => {
+                setPassengers(r.data);
+            })
+    }
+
     const addTour = () => {
         alert(customerId)
     }
@@ -57,6 +64,7 @@ const TourDetail = () => {
 
     useEffect(() => {
         findTour();
+        findPassengers();
     }, [])
 
 
@@ -66,6 +74,7 @@ const TourDetail = () => {
     const [visibleAddTourPopup, setVisibleAddTourPopup] = useState(false);
     const [paymentPrice, setPaymentPrice] = useState(0);
     const [seachCustomer, setSeachCustomer] = useState("");
+    const [passangers, setPassengers] = useState([]);
 
     useEffect(() => {
         if (seachCustomer.length >= 4) {
@@ -206,22 +215,23 @@ const TourDetail = () => {
                         </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                        {data.passangers.map((e) => {
-                            return (
-                                <CTableRow key={e.id}>
-                                    <CTableDataCell>
-                                        <CButton variant="ghost" color="primary" onClick={() => handleCustomerDetail(e.id)}>{e.passengerName}</CButton>
-                                    </CTableDataCell>
-                                    <CTableDataCell>{e.birthDate}</CTableDataCell>
-                                    <CTableDataCell>{e.phoneNumber}</CTableDataCell>
-                                    <CTableDataCell>{e.email}</CTableDataCell>
-                                    <CTableDataCell>{e.identity}</CTableDataCell>
-                                    <CTableDataCell>
-                                        <CButton variant="ghost" color="danger" onClick={() => handleRemoveCustomer(e.id)}>{t('remove')}</CButton>
-                                    </CTableDataCell>
-                                </CTableRow>
-                            )
-                        })}
+                        {
+                            passangers.map((e) => {
+                                return (
+                                    <CTableRow key={e.id}>
+                                        <CTableDataCell>
+                                            <CButton variant="ghost" color="primary" onClick={() => handleCustomerDetail(e.id)}>{e.passengerName}</CButton>
+                                        </CTableDataCell>
+                                        <CTableDataCell>{e.birthDate}</CTableDataCell>
+                                        <CTableDataCell>{e.phoneNumber}</CTableDataCell>
+                                        <CTableDataCell>{e.email}</CTableDataCell>
+                                        <CTableDataCell>{e.identity}</CTableDataCell>
+                                        <CTableDataCell>
+                                            <CButton variant="ghost" color="danger" onClick={() => handleRemoveCustomer(e.id)}>{t('remove')}</CButton>
+                                        </CTableDataCell>
+                                    </CTableRow>
+                                )
+                            })}
                     </CTableBody>
                 </CTable>
                 <CPagination className="CPagination-custom" aria-label="Page navigation example" align="center">
