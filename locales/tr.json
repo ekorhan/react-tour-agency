@@ -51,5 +51,7 @@
   "tour_startTime": "Çıkış Saati",
   "tour_endDate": "Tur Bitiş Tarihi",
   "tour_endTime": "Dönüş Saati",
-  "customer_search": "Müşterinin ismini ya da numarasını buraya yazabilirsiniz."
+  "customer_search": "Müşterinin ismini ya da numarasını buraya yazabilirsiniz.",
+  "tour_search": "Dört harf girdikten sonra arama yapılacaktır.",
+  "paid": "Ödenen"
 }

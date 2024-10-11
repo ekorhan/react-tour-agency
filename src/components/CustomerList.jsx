@@ -20,7 +20,7 @@ import {
     CFormSelect
 } from '@coreui/react'
 import { useTranslation } from "react-i18next";
-import { httpGet } from '../http/http';
+import { httpGet, httpPost } from '../http/http';
 import CIcon from "@coreui/icons-react";
 import { cilSearch } from '@coreui/icons';
 
@@ -47,6 +47,17 @@ const CustomerList = () => {
     const addTour = () => {
         console.log("customerId: " + customer.id);
         console.log("tourId: " + tourId);
+
+        const request = {
+            customerId: customer.id,
+            tourId: tourId,
+            paid: paid
+        }
+
+        httpPost('customerTour/addCustomerToTour', request)
+            .then(r => {
+                console.log(r.data);
+            });
         setVisibleAddTourPopup(!visibleAddTourPopup);
     };
 
@@ -63,11 +74,11 @@ const CustomerList = () => {
 
     const [customers, setCustomers] = useState([{ id: 0 }]);
     const [customer, setCustomer] = useState({ id: 0 });
-    const [tours, setTours] = useState([{ id: 0 }]);
+    const [tours, setTours] = useState([]);
     const [tourId, setTourId] = useState(0);
 
 
-    const [paymentPrice, setPaymentPrice] = useState(0);
+    const [paid, setPaid] = useState(0);
     const [searchTour, setSearchTour] = useState([]);
 
     useEffect(() => {
@@ -75,6 +86,9 @@ const CustomerList = () => {
             httpGet('tour/search?' + ('anyName=' + searchTour))
                 .then(r => {
                     setTours(r.data);
+                    if (r.data.length >= 1) {
+                        setTourId(r.data[0].id);
+                    }
                 });
         }
     }, [searchTour])
@@ -152,12 +166,11 @@ const CustomerList = () => {
                         </CCol>
                         <CCol className="mb-3">
                             <CFormLabel>
-                                {t('price')}
+                                {t('paid')}
                             </CFormLabel>
                             <CFormInput
-                                value={paymentPrice}
-                                type="number"
-                                onChange={e => setPaymentPrice(e.target.value)}
+                                value={paid}
+                                onChange={e => setPaid(e.target.value)}
                                 required
                             />
                         </CCol>
