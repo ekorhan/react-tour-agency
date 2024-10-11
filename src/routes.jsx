@@ -11,7 +11,7 @@ const TourEdit = React.lazy(() => import('./components/TourEdit'))
 //Customer
 const CustomerCreate = React.lazy(() => import('./components/CustomerCreate'))
 const CustomerDetail = React.lazy(() => import('./components/CustomerDetail'))
-const CustomerEdit = React.lazy(() => import('./components/CustomerCreate'))
+const CustomerEdit = React.lazy(() => import('./components/CustomerEdit'))
 const CustomerList = React.lazy(() => import('./components/CustomerList'))
 
 //Driver

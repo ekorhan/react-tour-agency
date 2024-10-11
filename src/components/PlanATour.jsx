@@ -149,7 +149,6 @@ const PlanATour = () => {
               type="time"
               value={startTime}
               onChange={e => setStartTime(e.target.value)}
-              required
             />
           </CCol>
 
@@ -169,7 +168,6 @@ const PlanATour = () => {
               type="time"
               value={endTime}
               onChange={e => setEndTime(e.target.value)}
-              required
             />
           </CCol>
 
@@ -206,7 +204,6 @@ const PlanATour = () => {
             <CFormSelect
               value={vehicleId}
               onChange={e => setVehicleId(e.target.value)}
-              required
               label={t("vehicle")}>
               {vehicles.map((e) => {
                 return (
@@ -220,7 +217,6 @@ const PlanATour = () => {
             <CFormSelect
               value={driverId}
               onChange={e => setDriverId(e.target.value)}
-              required
               label={t("driver")}>
               {drivers.map((e) => {
                 return (
