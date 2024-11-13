@@ -3,7 +3,7 @@ import { legacy_createStore as createStore } from 'redux'
 const initialState = {
   sidebarShow: true,
   theme: 'light',
-  token: localStorage.getItem('token') || 'token::none',
+  token: localStorage.getItem('token') || null,
   auth: localStorage.getItem('auth') === 'true',
 }
 

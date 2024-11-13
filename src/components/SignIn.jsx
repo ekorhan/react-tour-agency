@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
-import { httpPost } from '../http/http';
+import useHttpPost from '../http/HttpPostService'
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -23,23 +23,31 @@ const SignIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    function signin() {
+    // Hook'u component seviyesinde tanımlıyoruz
+    const signIn = useHttpPost('auth/login');
+
+    const signin = async (e) => {
+        e.preventDefault();
+
         const request = {
             "email": email,
             "password": password
         };
 
-        httpPost('auth/login', request)
-            .then(r => {
-                let data = r.data;
-                if (data !== null) {
-                    dispatch({ type: 'set', token: data });
-                    dispatch({ type: 'set', auth: true });
-                    navigate(`/dashboard`);
-                } else {
-                    alert(t("customer_create_failed"));
-                }
-            });
+        try {
+            // Hook'u çağırmak yerine, hook'tan dönen fonksiyonu kullanıyoruz
+            const response = await signIn(request);
+            if (response !== null) {
+                dispatch({ type: 'set', token: response });
+                dispatch({ type: 'set', auth: true });
+                navigate(`/dashboard`);
+            } else {
+                alert(t("customer_create_failed"));
+            }
+        } catch (error) {
+            console.error('Error saving customer:', error);
+            alert(t("customer_create_failed"));
+        }
     }
 
     return (
