@@ -18,26 +18,26 @@ import {
     CRow,
     CCol
 } from "@coreui/react";
-import { httpGet } from '../http/http';
+import useHttpGet from '../http/HttpGetService'
 import { useTranslation } from 'react-i18next';
 
 const CustomerDetails = () => {
     const { t } = useTranslation();
-
     const { id } = useParams();
+    const [customer, setCustomer] = useState({ customerId: 0 });
+    const fetchCustomer = useHttpGet('customer?' + ('customerId=' + id)); // Hook component seviyesinde tanımlanmalı
 
     useEffect(() => {
-        findCustomer();
-    }, [])
-
-    const findCustomer = () => {
-        httpGet('customer?' + ('customerId=' + id))
-            .then(r => {
-                setCustomer(r.data);
-            });
-    }
-
-    const [customer, setCustomer] = useState({ customerId: 0 });
+        const getCustomer = async () => {
+            try {
+                const response = await fetchCustomer();
+                setCustomer(response);
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            }
+        };
+        getCustomer();
+    }, [fetchCustomer]);
 
     return (
         <CRow>

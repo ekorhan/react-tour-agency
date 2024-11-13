@@ -8,6 +8,7 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
+  CButton,
 } from '@coreui/react'
 import {
   cilBell,
@@ -23,8 +24,19 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 const AppHeaderDropdown = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
+
+  function signout() {
+    dispatch({ type: 'set', token: null });
+    dispatch({ type: 'set', auth: false });
+    navigate(`/signin`);
+  }
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
@@ -84,10 +96,12 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
-          <CIcon icon={cilLockLocked} className="me-2" />
-          Lock Account
-        </CDropdownItem>
+        <CButton onClick={() => signout()} >
+          <CDropdownItem href="#">
+            <CIcon icon={cilLockLocked} className="me-2" />
+            Lock Account
+          </CDropdownItem>
+        </CButton>
       </CDropdownMenu>
     </CDropdown>
   )

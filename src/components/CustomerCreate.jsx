@@ -12,55 +12,61 @@ import {
   CRow
 } from "@coreui/react";
 import { useTranslation } from "react-i18next";
-import { httpPost } from '../http/http';
+import useHttpPost from '../http/HttpPostService'
 
 const CustomerCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const handleCustomerDetail = (id) => {
-    navigate(`/customer/${id}`);
-  };
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [countryCode, setCountryCode] = useState("+90");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  function saveCustomer() {
+  // Hook'u component seviyesinde tanımlıyoruz
+  const createCustomer = useHttpPost('customer/create');
+
+  const handleCustomerDetail = (id) => {
+    navigate(`/customer/${id}`);
+  };
+
+  const saveCustomer = async (e) => {
+    e.preventDefault();
+
     const request = {
-      "firstName": firstName,
-      "lastName": lastName,
-      "countryCode": countryCode,
-      "phoneNumber": phoneNumber
+      firstName,
+      lastName,
+      countryCode,
+      phoneNumber
     };
 
-    httpPost('customer/create', request)
-      .then(r => {
-        let data = r.data;
-        if (data > 0) {
-          alert(t("customer_create_success"));
-          handleCustomerDetail(data);
-        } else {
-          alert(t("customer_create_failed"));
-        }
-      });
-  }
+    try {
+      // Hook'u çağırmak yerine, hook'tan dönen fonksiyonu kullanıyoruz
+      const response = await createCustomer(request);
+      if (response > 0) {
+        alert(t("customer_create_success"));
+        handleCustomerDetail(response);
+      } else {
+        alert(t("customer_create_failed"));
+      }
+    } catch (error) {
+      console.error('Error saving customer:', error);
+      alert(t("customer_create_failed"));
+    }
+  };
 
-  function handleBlur(input) {
-    if (input.length == 0)
-      return;
+  const handleBlur = (input) => {
+    if (input.length === 0) return;
     if (input.length < 10) {
       setPhoneNumber(input);
+      return;
     }
-    // Kullanıcıdan alınan telefon numarasını formatlamak için bir regex kullanarak uygun formata dönüştürüyoruz
+
     let fixed = input.replace(/\D/g, '');
     if (fixed.length > 0) {
-      // İstenen formata göre telefon numarasını düzenliyoruz
       fixed = fixed.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '($1) $2 $3-$4');
     }
     setPhoneNumber(fixed);
-  }
+  };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -101,11 +107,9 @@ const CustomerCreate = () => {
                 <CFormInput
                   value={phoneNumber}
                   onChange={e => handleBlur(e.target.value)}
-                  //onBlur={e => handleBlur(e.target.value)}
                   required
                 />
               </CCol>
-
             </CRow>
 
             <CRow className="d-flex justify-content-end mb-3">
@@ -115,9 +119,9 @@ const CustomerCreate = () => {
             </CRow>
           </CForm>
         </CCardBody>
-      </CCard >
+      </CCard>
     </div>
-  )
-}
+  );
+};
 
 export default CustomerCreate;

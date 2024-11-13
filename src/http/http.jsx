@@ -19,7 +19,3 @@ export async function httpGet(url) {
         console.error(error);
     }
 }
-
-function timeout(delay) {
-    return new Promise(res => setTimeout(res, delay));
-}

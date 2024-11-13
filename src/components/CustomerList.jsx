@@ -21,6 +21,8 @@ import {
 } from '@coreui/react'
 import { useTranslation } from "react-i18next";
 import { httpGet, httpPost } from '../http/http';
+import useHttpGet from '../http/HttpGetService'
+import useHttpPost from '../http/HttpPostService'
 import CIcon from "@coreui/icons-react";
 import { cilSearch } from '@coreui/icons';
 
@@ -28,8 +30,27 @@ import { cilSearch } from '@coreui/icons';
 const CustomerList = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const fetchCustomers = useHttpGet('customer/list'); // Hook component seviyesinde tanımlanmalı
 
     const [visibleAddTourPopup, setVisibleAddTourPopup] = useState(false);
+    const [customers, setCustomers] = useState([{ id: 0 }]);
+    const [customer, setCustomer] = useState({ id: 0 });
+    const [tours, setTours] = useState([]);
+    const [tourId, setTourId] = useState(0);
+    const [paid, setPaid] = useState(0);
+    const [searchTour, setSearchTour] = useState([]);
+
+    useEffect(() => {
+        const getCustomers = async () => {
+            try {
+                const response = await fetchCustomers();
+                setCustomers(response);
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            }
+        };
+        getCustomers();
+    }, [fetchCustomers]);
 
     const handleCustomerDetail = (id) => {
         navigate(`/customer/${id}`);
@@ -45,41 +66,21 @@ const CustomerList = () => {
     };
 
     const addTour = () => {
-        console.log("customerId: " + customer.id);
-        console.log("tourId: " + tourId);
-
         const request = {
             customerId: customer.id,
             tourId: tourId,
             paid: paid
-        }
+        };
 
         httpPost('customerTour/addCustomerToTour', request)
             .then(r => {
                 console.log(r.data);
+                setVisibleAddTourPopup(false);
+            })
+            .catch(error => {
+                console.error('Error adding tour:', error);
             });
-        setVisibleAddTourPopup(!visibleAddTourPopup);
     };
-
-    const findCustomers = () => {
-        httpGet('customer/list')
-            .then(r => {
-                setCustomers(r.data);
-            });
-    }
-
-    useEffect(() => {
-        findCustomers();
-    }, []);
-
-    const [customers, setCustomers] = useState([{ id: 0 }]);
-    const [customer, setCustomer] = useState({ id: 0 });
-    const [tours, setTours] = useState([]);
-    const [tourId, setTourId] = useState(0);
-
-
-    const [paid, setPaid] = useState(0);
-    const [searchTour, setSearchTour] = useState([]);
 
     useEffect(() => {
         if (searchTour.length >= 4) {
@@ -89,9 +90,12 @@ const CustomerList = () => {
                     if (r.data.length >= 1) {
                         setTourId(r.data[0].id);
                     }
+                })
+                .catch(error => {
+                    console.error('Error searching tours:', error);
                 });
         }
-    }, [searchTour])
+    }, [searchTour]);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
