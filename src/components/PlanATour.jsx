@@ -14,6 +14,7 @@ import {
 
 import { useTranslation } from "react-i18next";
 import { httpGet, httpPost } from '../http/http';
+import useHttpGet from '../http/HttpGetService'
 
 const PlanATour = () => {
   const navigate = useNavigate();
@@ -27,10 +28,23 @@ const PlanATour = () => {
   const [stations, setStations] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const stationService = useHttpGet('station/stations');
+  useEffect(() => {
+    const fetchStations = async (e) => {
+      try {
+        const data = await stationService();
+        setStations(data);
+        setStartingStationId(data[0].id)
+        setDestinationId(data[0].id)
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchStations();
+  }, [stationService])
 
 
   useEffect(() => {
-    findStations();
     findDrivers();
     findVehicles();
   }, [])

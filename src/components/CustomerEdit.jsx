@@ -12,7 +12,8 @@ import {
   CRow
 } from "@coreui/react";
 import { useTranslation } from "react-i18next";
-import { httpGet, httpPost } from "../http/http";
+import useHttpGet from '../http/HttpGetService'
+import useHttpPost from '../http/HttpPostService'
 
 const CustomerEdit = () => {
   const { t } = useTranslation();
@@ -24,7 +25,31 @@ const CustomerEdit = () => {
     navigate(`/customer/${id}`);
   };
 
-  function editCustomer() {
+  const [reqFirstName, setReqFirstName] = useState();
+  const [reqLastName, setReqLastName] = useState();
+  const [reqCountyCode, setReqCountryCode] = useState();
+  const [reqPhoneNumber, setReqPhoneNumber] = useState();
+
+  const fetchCustomer = useHttpGet('customer?' + ('customerId=' + id)); // Hook component seviyesinde tanımlanmalı
+  useEffect(() => {
+    const getCustomer = async () => {
+      try {
+        const r = await fetchCustomer();
+        setReqFirstName(r.firstName);
+        setReqLastName(r.lastName);
+        setReqCountryCode(r.countryCode);
+        setReqPhoneNumber(r.phoneNumber);
+      } catch (error) {
+        console.error('Error fetching customers:', error);
+      }
+    };
+    getCustomer();
+  }, [fetchCustomer]);
+
+  const customerUpdate = useHttpPost('customer/edit');
+  const editCustomer = async (e) => {
+    e.preventDefault();
+
     const request = {
       "id": id,
       "firstName": reqFirstName,
@@ -33,16 +58,16 @@ const CustomerEdit = () => {
       "phoneNumber": reqPhoneNumber
     };
 
-    httpPost("customer/edit", request)
-      .then(r => {
-        let data = r.data;
-        if (data > 0) {
-          alert(t("customer_create_success"));
-          handleCustomerDetail(data);
-        } else {
-          alert(t("customer_create_failed"));
-        }
-      });
+    try {
+      const response = await customerUpdate(request);
+      if (response && response.id > 0) {
+        handleCustomerDetail(response.id);
+      } else {
+        console.error('Error saving customer:', error);
+      }
+    } catch (error) {
+      console.error('Error saving customer:', error);
+    }
   }
 
   function handleBlur(input) {
@@ -59,24 +84,6 @@ const CustomerEdit = () => {
     }
     setReqPhoneNumber(fixed);
   }
-
-  useEffect(() => {
-    findCustomer();
-  }, []);
-
-  const findCustomer = () => {
-    httpGet("customer?" + ("customerId=" + id))
-      .then(r => {
-        setReqFirstName(r.data.firstName);
-        setReqLastName(r.data.lastName);
-        setReqCountryCode(r.data.countryCode);
-        setReqPhoneNumber(r.data.phoneNumber);
-      });
-  };
-  const [reqFirstName, setReqFirstName] = useState();
-  const [reqLastName, setReqLastName] = useState();
-  const [reqCountyCode, setReqCountryCode] = useState();
-  const [reqPhoneNumber, setReqPhoneNumber] = useState();
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>

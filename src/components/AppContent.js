@@ -19,6 +19,7 @@ const AppContent = () => {
 
           {routes.map((route, idx) => {
             if (!route.element) return null;
+
             return (
               route.element && (
                 <Route

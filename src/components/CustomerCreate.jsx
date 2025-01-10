@@ -22,7 +22,6 @@ const CustomerCreate = () => {
   const [countryCode, setCountryCode] = useState("+90");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  // Hook'u component seviyesinde tanımlıyoruz
   const createCustomer = useHttpPost('customer/create');
 
   const handleCustomerDetail = (id) => {

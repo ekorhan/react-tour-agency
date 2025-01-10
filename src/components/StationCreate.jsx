@@ -13,6 +13,7 @@ import {
 } from "@coreui/react";
 import { useTranslation } from "react-i18next";
 import { httpPost } from '../http/http';
+import useHttpPost from '../http/HttpPostService';
 
 const StationCreate = () => {
   const { t } = useTranslation();
@@ -30,7 +31,11 @@ const StationCreate = () => {
   const [zip, setZip] = useState("");
   const [country, setCountry] = useState("TR");
 
-  function createStation() {
+  const stationService = useHttpPost('station/create');
+
+  const createStation = async (e) => {
+    e.preventDefault();
+
     const request = {
       "stationName": stationName,
       "stationType": stationType,
@@ -41,16 +46,12 @@ const StationCreate = () => {
       "country": country
     };
 
-    httpPost('station/create', request)
-      .then(r => {
-        let data = r.data;
-        if (data > 0) {
-          alert(t("station_create_success"));
-          handleStationDetail(data);
-        } else {
-          alert(t("station_create_failed"));
-        }
-      });
+    try {
+      const stationId = await stationService(request);
+      handleStationDetail(stationId);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (
