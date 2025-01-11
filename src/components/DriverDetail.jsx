@@ -8,24 +8,27 @@ import {
     CRow,
     CCol
 } from "@coreui/react";
-import { httpGet } from '../http/http';
 import { useTranslation } from 'react-i18next';
+import useHttpGet from '../http/HttpGetService';
 
 const CustomerDetails = () => {
     const { t } = useTranslation();
 
     const { id } = useParams();
 
-    useEffect(() => {
-        findDriver();
-    }, [])
+    const driverService = useHttpGet('driver?' + ('driverId=' + id));
 
-    const findDriver = () => {
-        httpGet('driver?' + ('driverId=' + id))
-            .then(r => {
-                setDriver(r.data);
-            });
-    }
+    useEffect(() => {
+        const findDriver = async (e) => {
+            try {
+                const data = await driverService();
+                setDriver(data);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        findDriver();
+    }, [driverService])
 
     const [driver, setDriver] = useState({ id: 0 });
 

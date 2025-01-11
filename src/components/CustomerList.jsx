@@ -20,7 +20,6 @@ import {
     CFormSelect
 } from '@coreui/react'
 import { useTranslation } from "react-i18next";
-import { httpGet, httpPost } from '../http/http';
 import useHttpGet from '../http/HttpGetService'
 import useHttpPost from '../http/HttpPostService'
 import CIcon from "@coreui/icons-react";
@@ -39,6 +38,10 @@ const CustomerList = () => {
     const [tourId, setTourId] = useState(0);
     const [paid, setPaid] = useState(0);
     const [searchTour, setSearchTour] = useState([]);
+
+    const customerTourService = useHttpPost('customerTour/addCustomerToTour');
+
+    const searchTourService = useHttpGet('tour/search?' + ('anyName=' + searchTour));
 
     useEffect(() => {
         const getCustomers = async () => {
@@ -65,37 +68,40 @@ const CustomerList = () => {
         setVisibleAddTourPopup(!visibleAddTourPopup);
     };
 
-    const addTour = () => {
+    const addTour = async (e) => {
+        e.preventDefault();
+
         const request = {
             customerId: customer.id,
             tourId: tourId,
             paid: paid
         };
 
-        httpPost('customerTour/addCustomerToTour', request)
-            .then(r => {
-                console.log(r.data);
-                setVisibleAddTourPopup(false);
-            })
-            .catch(error => {
-                console.error('Error adding tour:', error);
-            });
+        try {
+            const data = await customerTourService(request);
+            console.log(data);
+            setVisibleAddTourPopup(false);
+        } catch (e) {
+            console.error('Error adding tour:', e);
+        }
     };
 
     useEffect(() => {
-        if (searchTour.length >= 4) {
-            httpGet('tour/search?' + ('anyName=' + searchTour))
-                .then(r => {
-                    setTours(r.data);
-                    if (r.data.length >= 1) {
-                        setTourId(r.data[0].id);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error searching tours:', error);
-                });
+        const searchTours = async (e) => {
+            try {
+                const data = await searchTourService();
+                setTours(data);
+                if (data.length >= 1) {
+                    setTourId(data[0].id);
+                }
+            } catch (e) {
+                console.error('Error searching tours:', e);
+            }
         }
-    }, [searchTour]);
+        if (searchTour.length >= 4) {
+            searchTours();
+        }
+    }, [searchTourService]);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

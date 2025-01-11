@@ -16,7 +16,7 @@ import useHttpPost from '../http/HttpPostService'
 
 const SignIn = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const isAuth = useSelector((state) => state.auth)
 

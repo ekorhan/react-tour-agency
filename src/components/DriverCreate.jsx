@@ -12,13 +12,13 @@ import {
   CRow
 } from "@coreui/react";
 import { useTranslation } from "react-i18next";
-import { httpPost } from '../http/http';
+import useHttpPost from '../http/HttpPostService';
 
 const DriverCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleCustomerDetail = (id) => {
+  const handleDriverDetail = (id) => {
     navigate(`/driver/${id}`);
   };
 
@@ -33,7 +33,11 @@ const DriverCreate = () => {
   const [gender, setGender] = useState("M");
   const [dateOfBirth, setDateOfBirth] = useState("");
 
-  function createDriver() {
+  const driverCreateService = useHttpPost('driver/create');
+
+  const createDriver = async (e) => {
+    e.preventDefault();
+
     const request = {
       "firstName": firstName,
       "lastName": lastName,
@@ -47,16 +51,12 @@ const DriverCreate = () => {
       "dateOfBirth": dateOfBirth,
     };
 
-    httpPost('driver/create', request)
-      .then(r => {
-        let data = r.data;
-        if (data > 0) {
-          alert(t("driver_create_success"));
-          handleCustomerDetail(data);
-        } else {
-          alert(t("driver_create_failed"));
-        }
-      });
+    try {
+      const data = await driverCreateService(request);
+      handleDriverDetail(data);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   function handleBlur(input) {

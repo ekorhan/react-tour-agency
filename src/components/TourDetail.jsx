@@ -24,70 +24,87 @@ import {
     CModalTitle,
     CForm,
     CFormInput,
-    CFormText,
     CFormLabel
 } from '@coreui/react'
-import data from "../data.json";
-import { httpGet } from '../http/http';
 import { useTranslation } from 'react-i18next';
 import CIcon from "@coreui/icons-react";
 import { cilSearch } from '@coreui/icons';
+import useHttpGet from '../http/HttpGetService'
 
 const TourDetail = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { id } = useParams();
+
+    const [tour, setTour] = useState({ tourName: '' });
+    const [customers, setCustomers] = useState([]);
+    const [customerId, setCustomerId] = useState('0');
+    const [visibleAddTourPopup, setVisibleAddTourPopup] = useState(false);
+    const [paymentPrice, setPaymentPrice] = useState(0);
+    const [searchCustomer, setSearchCustomer] = useState("");
+    const [passangers, setPassengers] = useState([]);
+
+    const tourDetailService = useHttpGet('tour?' + ('tourId=' + id));
+    const passangerService = useHttpGet('customerTour/tourCustomers?' + ('tourId=' + id));
+    const searchCustomerService = useHttpGet('customer/search?' + ('anyName=' + searchCustomer));
+
+    useEffect(() => {
+        const findTour = async (e) => {
+            try {
+                const data = await tourDetailService();
+                setTour(data);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        findTour();
+    }, [tourDetailService]);
+
+    useEffect(() => {
+        const findPassengers = async (e) => {
+            try {
+                const data = await passangerService();
+                setPassengers(data);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        findPassengers();
+    }, [passangerService]);
+
+    useEffect(() => {
+        const searchCustomers = async (e) => {
+            try {
+                const data = await searchCustomerService();
+                setCustomers(data);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        if (searchCustomer.length >= 4) {
+            searchCustomers();
+        }
+    }, [searchCustomerService]);
 
     const handleTourEdit = (id) => {
         navigate(`/tourlist/edit/${id}`);
     };
 
-    const { id } = useParams();
-
-    const findTour = () => {
-        httpGet('tour?' + ('tourId=' + id))
-            .then(r => {
-                setTour(r.data);
-            });
-    }
-
-    const findPassengers = () => {
-        httpGet('customerTour/tourCustomers?' + ('tourId=' + id))
-            .then(r => {
-                setPassengers(r.data);
-            })
-    }
-
-    const addTour = () => {
-        alert(customerId)
-    }
-
-
-    useEffect(() => {
-        findTour();
-        findPassengers();
-    }, [])
-
-
-    const [tour, setTour] = useState({ tourName: '' });
-    const [customers, setCustomers] = useState([]);
-    const [customerId, setCustomerId] = useState(0);
-    const [visibleAddTourPopup, setVisibleAddTourPopup] = useState(false);
-    const [paymentPrice, setPaymentPrice] = useState(0);
-    const [seachCustomer, setSeachCustomer] = useState("");
-    const [passangers, setPassengers] = useState([]);
-
-    useEffect(() => {
-        if (seachCustomer.length >= 4) {
-            httpGet('customer/search?' + ('anyName=' + seachCustomer))
-                .then(r => {
-                    setCustomers(r.data);
-                });
+    const addTour = (e) => {
+        e.preventDefault(); // Form submit'in default davranışını engelle
+        if (customerId === '0') {
+            alert(t('tour_addTour'));
+            return;
         }
-    }, [seachCustomer])
+        console.log('customerId type:', typeof customerId);
+        console.log('customerId value:', customerId);
+        // API çağrısı veya diğer işlemler
+    }
 
     useEffect(() => {
-        setSeachCustomer("");
+        setSearchCustomer("");
         setCustomers([]);
+        setCustomerId('0');
     }, [visibleAddTourPopup])
 
     return (
@@ -252,6 +269,7 @@ const TourDetail = () => {
                     visible={visibleAddTourPopup}
                     onClose={() => setVisibleAddTourPopup(false)}
                     aria-labelledby="OptionalSizesExample1"
+                    backdrop="static"
                 >
                     <CModalHeader>
                         <CModalTitle id="OptionalSizesExample1">{tour.tourName + " " + t('tour_adding_customer')}</CModalTitle>
@@ -264,8 +282,8 @@ const TourDetail = () => {
                                     <CIcon icon={cilSearch} />
                                 </CFormLabel>
                                 <CFormInput
-                                    value={seachCustomer}
-                                    onChange={e => setSeachCustomer(e.target.value)}
+                                    value={searchCustomer}
+                                    onChange={e => setSearchCustomer(e.target.value)}
                                     placeholder={t('customer_search')}
                                     size="sm"
                                 >
@@ -275,6 +293,7 @@ const TourDetail = () => {
                                     onChange={e => setCustomerId(e.target.value)}
                                     required
                                 >
+                                    <option value="0">{t('customer')}</option>
                                     {customers.map((e) => {
                                         return (
                                             <option key={e.id} value={e.id}>{e.firstName + " " + e.lastName}</option>

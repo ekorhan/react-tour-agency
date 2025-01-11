@@ -10,11 +10,24 @@ import {
     CButtonGroup,
     CButton
 } from '@coreui/react'
-import { httpGet } from '../http/http';
+import useHttpGet from '../http/HttpGetService'
 
 
 const TourList = () => {
     const navigate = useNavigate();
+    const tourService = useHttpGet('tour/tours');
+
+    useEffect(() => {
+        const findTours = async (e) => {
+            try {
+                const data = await tourService();
+                setTours(data);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        findTours();
+    }, [tourService]);
 
     const handleTourDetail = (id) => {
         navigate(`/tourlist/detail/${id}`);
@@ -23,19 +36,6 @@ const TourList = () => {
     const handleTourEdit = (id) => {
         navigate(`/tourlist/edit/${id}`);
     };
-
-    const findTours = () => {
-        httpGet('tour/tours')
-            .then(r => {
-                setTours(r.data);
-            });
-    }
-
-
-    useEffect(() => {
-        findTours();
-    }, [])
-
 
     const [tours, setTours] = useState([{ id: 0 }]);
 

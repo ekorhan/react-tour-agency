@@ -12,7 +12,7 @@ import {
   CRow
 } from "@coreui/react";
 import { useTranslation } from "react-i18next";
-import { httpPost } from '../http/http';
+import useHttpPost from '../http/HttpPostService';
 
 const VehicleCreate = () => {
   const { t } = useTranslation();
@@ -27,7 +27,11 @@ const VehicleCreate = () => {
   const [capacity, setCapacity] = useState(0);
   const [typeOfVehicle, setTypeOfVehicle] = useState("");
 
-  function createVehicle() {
+  const vehicleCreateService = useHttpPost('vehicle/create');
+
+  const createVehicle = async (e) => {
+    e.preventDefault();
+
     const request = {
       "vehicleName": vehicleName,
       "plate": plate,
@@ -35,18 +39,12 @@ const VehicleCreate = () => {
       "typeOfVehicle": typeOfVehicle
     };
 
-    alert(request);
-    httpPost('vehicle/create', request)
-      .then(r => {
-        let data = r.data;
-        alert(data);
-        if (data > 0) {
-          alert(t("vehicle_create_success"));
-          handleVehicleDetail(data);
-        } else {
-          alert(t("vehicle_create_failed"));
-        }
-      });
+    try {
+      const data = await vehicleCreateService(request);
+      handleVehicleDetail(data);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (

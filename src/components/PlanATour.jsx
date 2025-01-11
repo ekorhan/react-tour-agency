@@ -13,8 +13,8 @@ import {
 } from "@coreui/react";
 
 import { useTranslation } from "react-i18next";
-import { httpGet, httpPost } from '../http/http';
 import useHttpGet from '../http/HttpGetService'
+import useHttpPost from '../http/HttpPostService'
 
 const PlanATour = () => {
   const navigate = useNavigate();
@@ -28,74 +28,14 @@ const PlanATour = () => {
   const [stations, setStations] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const tourCreateService = useHttpPost('tour/create');
   const stationService = useHttpGet('station/stations');
-  useEffect(() => {
-    const fetchStations = async (e) => {
-      try {
-        const data = await stationService();
-        setStations(data);
-        setStartingStationId(data[0].id)
-        setDestinationId(data[0].id)
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    fetchStations();
-  }, [stationService])
+  const driverService = useHttpGet('driver/drivers');
+  const vehicleService = useHttpGet('vehicle/vehicles');
 
+  const saveTour = async (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    findDrivers();
-    findVehicles();
-  }, [])
-
-  function findStations() {
-    httpGet('station/stations')
-      .then(r => {
-        setStations(r.data)
-        setStartingStationId(r.data[0].id)
-        setDestinationId(r.data[0].id)
-      })
-  }
-
-  function findDrivers() {
-    httpGet('driver/drivers')
-      .then(r => {
-        setDrivers(r.data)
-        setDriverId(r.data[0].id)
-      })
-  }
-
-  function findVehicles() {
-    httpGet('vehicle/vehicles')
-      .then(r => {
-        setVehicles(r.data)
-        setVehicleId(r.data[0].id)
-      })
-  }
-
-  const [tourName, setTourName] = useState("");
-  const [startDate, setStartDate] = useState();
-  const [startTime, setStartTime] = useState();
-  const [endDate, setEndDate] = useState();
-  const [endTime, setEndTime] = useState();
-  const [tourDescription, setTourDescription] = useState("");
-  const [tourImage, setTourImage] = useState("");
-  const [startingStationId, setStartingStationId] = useState(0);
-  const [destinationId, setDestinationId] = useState(0);
-  const [vehicleId, setVehicleId] = useState(0);
-  const [driverId, setDriverId] = useState(0);
-  const [tourPrice, setTourPrice] = useState("");
-  const [tourCategory, setTourCategory] = useState("");
-  const [tourType, setTourType] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [charVal, setCharVal] = useState([]);
-  const [season, setSeason] = useState("");
-  const [accommodation, setAccommotadion] = useState("");
-  const [visa, setVisa] = useState("");
-  const [gift, setGift] = useState("");
-
-  function saveTour() {
     const request = {
       tourName: tourName,
       startDate: startDate,
@@ -118,17 +58,81 @@ const PlanATour = () => {
       visa: visa,
       gift: gift
     };
-    httpPost('tour/create', request)
-      .then(r => {
-        let data = r.data;
-        if (data > 0) {
-          alert(t("customer_create_success"));
-          handleTourDetail(data);
-        } else {
-          alert(t("customer_create_failed"));
-        }
-      });
+
+    try {
+      // Hook'u çağırmak yerine, hook'tan dönen fonksiyonu kullanıyoruz
+      const response = await tourCreateService(request);
+      if (response > 0) {
+        handleTourDetail(data);
+      } else {
+        alert(t("customer_create_failed"));
+      }
+    } catch (error) {
+      console.error('Error saving customer:', error);
+      alert(t("customer_create_failed"));
+    }
   }
+
+  useEffect(() => {
+    const fetchStations = async (e) => {
+      try {
+        const data = await stationService();
+        setStations(data);
+        setStartingStationId(data[0].id)
+        setDestinationId(data[0].id)
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchStations();
+  }, [stationService]);
+
+  useEffect(() => {
+    const fetchDrivers = async (e) => {
+      try {
+        const data = await driverService();
+        setDrivers(data);
+        setDriverId(data[0].id)
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchDrivers();
+  }, [driverService]);
+
+  useEffect(() => {
+    const fetchVehicles = async (e) => {
+      try {
+        const data = await vehicleService();
+        setVehicles(data);
+        setVehicleId(data[0].id)
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchVehicles();
+  }, [vehicleService]);
+
+  const [tourName, setTourName] = useState("");
+  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endDate, setEndDate] = useState();
+  const [endTime, setEndTime] = useState();
+  const [tourDescription, setTourDescription] = useState("");
+  const [tourImage, setTourImage] = useState("");
+  const [startingStationId, setStartingStationId] = useState(0);
+  const [destinationId, setDestinationId] = useState(0);
+  const [vehicleId, setVehicleId] = useState(0);
+  const [driverId, setDriverId] = useState(0);
+  const [tourPrice, setTourPrice] = useState("");
+  const [tourCategory, setTourCategory] = useState("");
+  const [tourType, setTourType] = useState("");
+  const [capacity, setCapacity] = useState("");
+  const [charVal, setCharVal] = useState([]);
+  const [season, setSeason] = useState("");
+  const [accommodation, setAccommotadion] = useState("");
+  const [visa, setVisa] = useState("");
+  const [gift, setGift] = useState("");
 
   return (
     <CCard className="mb-4">
