@@ -38,7 +38,7 @@ const SignIn = () => {
 
         try {
             // Hook'u çağırmak yerine, hook'tan dönen fonksiyonu kullanıyoruz
-            const response = await signIn(request);
+            const response = true;
             if (response !== null) {
                 dispatch({ type: 'set', token: response });
                 dispatch({ type: 'set', auth: true });

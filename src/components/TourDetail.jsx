@@ -30,6 +30,7 @@ import { useTranslation } from 'react-i18next';
 import CIcon from "@coreui/icons-react";
 import { cilSearch } from '@coreui/icons';
 import useHttpGet from '../http/HttpGetService'
+import useHttpPost from '../http/HttpPostService'
 
 const TourDetail = () => {
     const { t } = useTranslation();
@@ -40,13 +41,16 @@ const TourDetail = () => {
     const [customers, setCustomers] = useState([]);
     const [customerId, setCustomerId] = useState('0');
     const [visibleAddTourPopup, setVisibleAddTourPopup] = useState(false);
-    const [paymentPrice, setPaymentPrice] = useState(0);
+    const [paymentPrice, setPaymentPrice] = useState();
     const [searchCustomer, setSearchCustomer] = useState("");
     const [passangers, setPassengers] = useState([]);
 
     const tourDetailService = useHttpGet('tour?' + ('tourId=' + id));
     const passangerService = useHttpGet('customerTour/tourCustomers?' + ('tourId=' + id));
     const searchCustomerService = useHttpGet('customer/search?' + ('anyName=' + searchCustomer));
+
+    const customerTourService = useHttpPost('customerTour/addCustomerToTour');
+    const customerTourRemoveService = useHttpPost('customerTour/removeCustomerFromTour');
 
     useEffect(() => {
         const findTour = async (e) => {
@@ -90,15 +94,40 @@ const TourDetail = () => {
         navigate(`/tourlist/edit/${id}`);
     };
 
-    const addTour = (e) => {
-        e.preventDefault(); // Form submit'in default davranışını engelle
+    const addTour = async (e) => {
+        e.preventDefault();
         if (customerId === '0') {
             alert(t('tour_addTour'));
             return;
         }
-        console.log('customerId type:', typeof customerId);
-        console.log('customerId value:', customerId);
-        // API çağrısı veya diğer işlemler
+
+        const request = {
+            customerId: customerId,
+            tourId: tour.id,
+            paid: paymentPrice
+        }
+
+        try {
+            await customerTourService(request);
+            setVisibleAddTourPopup(false);
+            window.location.reload();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const handleRemoveCustomer = async (customerId) => {
+        const request = {
+            customerId: customerId,
+            tourId: tour.id
+        }
+
+        try {
+            await customerTourRemoveService(request);
+            window.location.reload();
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     useEffect(() => {
@@ -310,6 +339,7 @@ const TourDetail = () => {
                                     value={paymentPrice}
                                     type="number"
                                     onChange={e => setPaymentPrice(e.target.value)}
+                                    placeholder="0"
                                     required
                                 />
                             </CCol>
